@@ -5,10 +5,13 @@ package mocks
 
 import (
 	"fmt"
+	"strconv"
 	"sort"
 
 	"github.com/mainflux/mainflux/things"
 )
+
+const uuidLen = 36
 
 // Since mocks will store data in map, and they need to resemble the real
 // identifiers as much as possible, a key will be created as combination of
@@ -83,3 +86,17 @@ func sortChannels(pm things.PageMetadata, chs []things.Channel) []things.Channel
 
 	return chs
 }
+
+func parseID(ID string) (id uint64) {
+	var slNum string
+
+	if len(ID) == uuidLen {
+		slNum = ID[len(ID) - 6:]
+	} else {
+		slNum = ID
+	}
+	id, _ = strconv.ParseUint(slNum, 10, 64)
+
+	return
+}
+
