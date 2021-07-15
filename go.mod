@@ -7,6 +7,7 @@ require (
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/docker/docker v20.10.6+incompatible
 	github.com/eclipse/paho.mqtt.golang v1.3.4
+	github.com/emqx/kuiper v0.0.0-20210610031432-360cad7e670f
 	github.com/fatih/color v1.10.0
 	github.com/go-kit/kit v0.10.0
 	github.com/go-redis/redis/v8 v8.8.2
@@ -14,7 +15,7 @@ require (
 	github.com/gocql/gocql v0.0.0-20210504150947-558dfae50b5d
 	github.com/gofrs/uuid v4.0.0+incompatible
 	github.com/gogo/protobuf v1.3.2
-	github.com/golang/protobuf v1.4.3
+	github.com/golang/protobuf v1.5.0
 	github.com/gopcua/opcua v0.1.6
 	github.com/hashicorp/vault/api v1.1.0
 	github.com/hokaccha/go-prettyjson v0.0.0-20210113012101-fb4e108d2519
@@ -44,5 +45,5 @@ require (
 	golang.org/x/time v0.0.0-20210220033141-f8bda1e9f3ba // indirect
 	golang.org/x/tools v0.1.0 // indirect
 	gonum.org/v1/gonum v0.9.1
-	google.golang.org/grpc v1.36.0
+	google.golang.org/grpc v1.36.1
 )

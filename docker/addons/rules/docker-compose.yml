@@ -1,0 +1,52 @@
+# Copyright (c) Mainflux
+# SPDX-License-Identifier: Apache-2.0
+
+# This docker-compose file contains rules engine service
+# for the Mainflux platform. Since this service is optional, this file is dependent on the
+# docker-compose.yml file from <project_root>/docker/. In order to run the service,
+# core services, as well as the network from the core composition, should be already running.
+
+version: "3.7"
+
+networks:
+  docker_mainflux-base-net:
+    external: true
+
+services:
+  kuiper:
+    image: mainflux/kuiper
+    command: "./bin/kuiperd"
+    container_name: mainflux-kuiper
+    restart: on-failure
+    ports:
+      - ${MF_KUIPER_PORT}:${MF_KUIPER_PORT}
+    networks:
+      docker_mainflux-base-net:
+    
+  rules:
+    image: mainflux/rules:${MF_RELEASE_TAG}
+    container_name: mainflux-rules
+    restart: on-failure
+    environment:
+      MF_RULES_LOG_LEVEL: ${MF_RULES_LOG_LEVEL}
+      MF_RULES_HTTP_PORT: ${MF_RULES_HTTP_PORT}
+      MF_RULES_SERVER_CERT: ${MF_RULES_SERVER_CERT}
+      MF_RULES_SERVER_KEY: ${MF_RULES_SERVER_KEY}
+      MF_RULES_SINGLE_USER_EMAIL: ${MF_RULES_SINGLE_USER_EMAIL}
+      MF_RULES_SINGLE_USER_TOKEN: ${MF_RULES_SINGLE_USER_TOKEN}
+      MF_RULES_CLIENT_TLS: ${MF_RULES_CLIENT_TLS}
+      MF_RULES_CA_CERTS: ${MF_RULES_CA_CERTS}
+      MF_KUIPER_URL: ${MF_KUIPER_URL}
+      MF_KUIPER_PLUGIN_HOST: ${MF_KUIPER_PLUGIN_HOST}
+      MF_KUIPER_PLUGIN_PORT: ${MF_KUIPER_PLUGIN_PORT}
+      MF_JAEGER_URL: ${MF_JAEGER_URL}
+      MF_AUTH_GRPC_URL: ${MF_AUTH_GRPC_URL}
+      MF_AUTH_GRPC_TIMEOUT: ${MF_AUTH_GRPC_TIMEOUT}
+      MF_THINGS_AUTH_GRPC_URL: ${MF_THINGS_AUTH_GRPC_URL}
+      MF_THINGS_AUTH_GRPC_TIMEOUT: ${MF_THINGS_AUTH_GRPC_TIMEOUT}
+    ports:
+      - ${MF_RULES_HTTP_PORT}:${MF_RULES_HTTP_PORT}
+    networks:
+       docker_mainflux-base-net:
+    depends_on:
+      - kuiper
