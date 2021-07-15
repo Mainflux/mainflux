@@ -28,7 +28,7 @@ For more details, check out the [official documentation][docs].
 - Container-based deployment using [Docker][docker] and [Kubernetes][kubernetes]
 - [LoRaWAN][lora] network integration
 - [OPC UA](opcua) integration
-- Edge [Agent](agent) and [Export](export) services for remote IoT gateway management and edge computing
+- Edge [Agent](https://github.com/mainflux/agent/tree/master) and [Export](https://github.com/mainflux/export/tree/master) services for remote IoT gateway management and edge computing
 - SDK
 - CLI
 - Small memory footprint and fast execution
