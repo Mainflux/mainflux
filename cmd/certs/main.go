@@ -53,8 +53,7 @@ const (
 	defPort          = "8204"
 	defServerCert    = ""
 	defServerKey     = ""
-	defBaseURL       = "http://localhost"
-	defThingsPrefix  = ""
+	defCertsURL      = "http://localhost"
 	defJaegerURL     = ""
 	defAuthURL       = "localhost:8181"
 	defAuthTimeout   = "1s"
@@ -85,7 +84,7 @@ const (
 	envCACerts       = "MF_CERTS_CA_CERTS"
 	envServerCert    = "MF_CERTS_SERVER_CERT"
 	envServerKey     = "MF_CERTS_SERVER_KEY"
-	envBaseURL       = "MF_SDK_BASE_URL"
+	envCertsURL      = "MF_SDK_CERTS_URL"
 	envThingsPrefix  = "MF_SDK_THINGS_PREFIX"
 	envJaegerURL     = "MF_JAEGER_URL"
 	envAuthURL       = "MF_AUTH_GRPC_URL"
@@ -122,7 +121,7 @@ type config struct {
 	httpPort     string
 	serverCert   string
 	serverKey    string
-	baseURL      string
+	certsURL     string
 	thingsPrefix string
 	jaegerURL    string
 	authURL      string
@@ -223,8 +222,7 @@ func loadConfig() config {
 		httpPort:     mainflux.Env(envPort, defPort),
 		serverCert:   mainflux.Env(envServerCert, defServerCert),
 		serverKey:    mainflux.Env(envServerKey, defServerKey),
-		baseURL:      mainflux.Env(envBaseURL, defBaseURL),
-		thingsPrefix: mainflux.Env(envThingsPrefix, defThingsPrefix),
+		certsURL:     mainflux.Env(envCertsURL, defCertsURL),
 		jaegerURL:    mainflux.Env(envJaegerURL, defJaegerURL),
 		authURL:      mainflux.Env(envAuthURL, defAuthURL),
 		authTimeout:  authTimeout,
@@ -324,8 +322,7 @@ func newService(auth mainflux.AuthServiceClient, db *sqlx.DB, logger mflog.Logge
 		HTTPPort:       cfg.httpPort,
 		ServerCert:     cfg.serverCert,
 		ServerKey:      cfg.serverKey,
-		BaseURL:        cfg.baseURL,
-		ThingsPrefix:   cfg.thingsPrefix,
+		CertsURL:       cfg.certsURL,
 		JaegerURL:      cfg.jaegerURL,
 		AuthURL:        cfg.authURL,
 		AuthTimeout:    cfg.authTimeout,
@@ -340,8 +337,7 @@ func newService(auth mainflux.AuthServiceClient, db *sqlx.DB, logger mflog.Logge
 	}
 
 	config := mfsdk.Config{
-		BaseURL:      cfg.baseURL,
-		ThingsPrefix: cfg.thingsPrefix,
+		CertsURL: cfg.certsURL,
 	}
 
 	sdk := mfsdk.NewSDK(config)

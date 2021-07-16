@@ -160,7 +160,7 @@ func dec(in []byte) ([]byte, error) {
 func newService(auth mainflux.AuthServiceClient, url string) bootstrap.Service {
 	things := mocks.NewConfigsRepository()
 	config := mfsdk.Config{
-		BaseURL: url,
+		BootstrapURL: url,
 	}
 
 	sdk := mfsdk.NewSDK(config)

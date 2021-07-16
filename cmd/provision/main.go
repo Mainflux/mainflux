@@ -93,12 +93,11 @@ func main() {
 	}
 
 	SDKCfg := mfSDK.Config{
-		BaseURL:           cfg.Server.ThingsLocation,
-		BootstrapURL:      cfg.Server.MfBSURL,
-		CertsURL:          cfg.Server.MfCertsURL,
-		HTTPAdapterPrefix: "http",
-		MsgContentType:    "application/json",
-		TLSVerification:   cfg.Server.TLS,
+		ThingsURL:       cfg.Server.ThingsLocation,
+		BootstrapURL:    cfg.Server.MfBSURL,
+		CertsURL:        cfg.Server.MfCertsURL,
+		MsgContentType:  "application/json",
+		TLSVerification: cfg.Server.TLS,
 	}
 	SDK := mfSDK.NewSDK(SDKCfg)
 

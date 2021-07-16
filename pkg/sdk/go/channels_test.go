@@ -25,13 +25,9 @@ func TestCreateChannel(t *testing.T) {
 	defer ts.Close()
 
 	sdkConf := sdk.Config{
-		BaseURL:           ts.URL,
-		UsersPrefix:       "",
-		GroupsPrefix:      "",
-		ThingsPrefix:      "",
-		HTTPAdapterPrefix: "",
-		MsgContentType:    contentType,
-		TLSVerification:   false,
+		ThingsURL:       ts.URL,
+		MsgContentType:  contentType,
+		TLSVerification: false,
 	}
 
 	mainfluxSDK := sdk.NewSDK(sdkConf)
@@ -86,13 +82,9 @@ func TestCreateChannels(t *testing.T) {
 	defer ts.Close()
 
 	sdkConf := sdk.Config{
-		BaseURL:           ts.URL,
-		UsersPrefix:       "",
-		GroupsPrefix:      "",
-		ThingsPrefix:      "",
-		HTTPAdapterPrefix: "",
-		MsgContentType:    contentType,
-		TLSVerification:   false,
+		ThingsURL:       ts.URL,
+		MsgContentType:  contentType,
+		TLSVerification: false,
 	}
 
 	mainfluxSDK := sdk.NewSDK(sdkConf)
@@ -153,13 +145,9 @@ func TestChannel(t *testing.T) {
 	ts := newThingsServer(svc)
 	defer ts.Close()
 	sdkConf := sdk.Config{
-		BaseURL:           ts.URL,
-		UsersPrefix:       "",
-		GroupsPrefix:      "",
-		ThingsPrefix:      "",
-		HTTPAdapterPrefix: "",
-		MsgContentType:    contentType,
-		TLSVerification:   false,
+		ThingsURL:       ts.URL,
+		MsgContentType:  contentType,
+		TLSVerification: false,
 	}
 
 	mainfluxSDK := sdk.NewSDK(sdkConf)
@@ -209,13 +197,9 @@ func TestChannels(t *testing.T) {
 	ts := newThingsServer(svc)
 	defer ts.Close()
 	sdkConf := sdk.Config{
-		BaseURL:           ts.URL,
-		UsersPrefix:       "",
-		GroupsPrefix:      "",
-		ThingsPrefix:      "",
-		HTTPAdapterPrefix: "",
-		MsgContentType:    contentType,
-		TLSVerification:   false,
+		ThingsURL:       ts.URL,
+		MsgContentType:  contentType,
+		TLSVerification: false,
 	}
 	var channels []sdk.Channel
 	mainfluxSDK := sdk.NewSDK(sdkConf)
@@ -295,13 +279,9 @@ func TestChannelsByThing(t *testing.T) {
 	ts := newThingsServer(svc)
 	defer ts.Close()
 	sdkConf := sdk.Config{
-		BaseURL:           ts.URL,
-		UsersPrefix:       "",
-		GroupsPrefix:      "",
-		ThingsPrefix:      "",
-		HTTPAdapterPrefix: "",
-		MsgContentType:    contentType,
-		TLSVerification:   false,
+		ThingsURL:       ts.URL,
+		MsgContentType:  contentType,
+		TLSVerification: false,
 	}
 	mainfluxSDK := sdk.NewSDK(sdkConf)
 
@@ -432,13 +412,9 @@ func TestUpdateChannel(t *testing.T) {
 	ts := newThingsServer(svc)
 	defer ts.Close()
 	sdkConf := sdk.Config{
-		BaseURL:           ts.URL,
-		UsersPrefix:       "",
-		GroupsPrefix:      "",
-		ThingsPrefix:      "",
-		HTTPAdapterPrefix: "",
-		MsgContentType:    contentType,
-		TLSVerification:   false,
+		ThingsURL:       ts.URL,
+		MsgContentType:  contentType,
+		TLSVerification: false,
 	}
 
 	mainfluxSDK := sdk.NewSDK(sdkConf)
@@ -494,13 +470,9 @@ func TestDeleteChannel(t *testing.T) {
 	ts := newThingsServer(svc)
 	defer ts.Close()
 	sdkConf := sdk.Config{
-		BaseURL:           ts.URL,
-		UsersPrefix:       "",
-		GroupsPrefix:      "",
-		ThingsPrefix:      "",
-		HTTPAdapterPrefix: "",
-		MsgContentType:    contentType,
-		TLSVerification:   false,
+		ThingsURL:       ts.URL,
+		MsgContentType:  contentType,
+		TLSVerification: false,
 	}
 
 	mainfluxSDK := sdk.NewSDK(sdkConf)

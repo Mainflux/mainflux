@@ -11,21 +11,19 @@ import (
 	"github.com/spf13/cobra"
 )
 
+const defURL string = "http://localhost"
+
 func main() {
 	msgContentType := string(sdk.CTJSONSenML)
 	sdkConf := sdk.Config{
-		BaseURL:           "http://localhost",
-		ReaderURL:         "http://localhost:8905",
-		BootstrapURL:      "http://localhost:8202",
-		CertsURL:          "http://localhost:8204",
-		ReaderPrefix:      "",
-		UsersPrefix:       "",
-		GroupsPrefix:      "",
-		ThingsPrefix:      "",
-		HTTPAdapterPrefix: "http",
-		BootstrapPrefix:   "things",
-		MsgContentType:    sdk.ContentType(msgContentType),
-		TLSVerification:   false,
+		AuthURL:         defURL,
+		ThingsURL:       defURL,
+		UsersURL:        defURL,
+		ReaderURL:       defURL,
+		BootstrapURL:    defURL,
+		CertsURL:        defURL,
+		MsgContentType:  sdk.ContentType(msgContentType),
+		TLSVerification: false,
 	}
 
 	// Root
@@ -64,49 +62,49 @@ func main() {
 
 	// Root Flags
 	rootCmd.PersistentFlags().StringVarP(
-		&sdkConf.BaseURL,
+		&sdkConf.AuthURL,
 		"mainflux-url",
-		"m",
-		sdkConf.BaseURL,
-		"Mainflux host URL",
-	)
-
-	rootCmd.PersistentFlags().StringVarP(
-		&sdkConf.UsersPrefix,
-		"users-prefix",
-		"u",
-		sdkConf.UsersPrefix,
-		"Mainflux users service prefix",
-	)
-
-	rootCmd.PersistentFlags().StringVarP(
-		&sdkConf.ThingsPrefix,
-		"things-prefix",
-		"t",
-		sdkConf.ThingsPrefix,
-		"Mainflux things service prefix",
-	)
-
-	rootCmd.PersistentFlags().StringVarP(
-		&sdkConf.GroupsPrefix,
-		"groups-prefix",
-		"g",
-		sdkConf.GroupsPrefix,
-		"Mainflux groups service prefix",
-	)
-
-	rootCmd.PersistentFlags().StringVarP(
-		&sdkConf.HTTPAdapterPrefix,
-		"http-prefix",
 		"a",
-		sdkConf.HTTPAdapterPrefix,
-		"Mainflux http adapter prefix",
+		sdkConf.AuthURL,
+		"Mainflux Auth URL",
+	)
+
+	rootCmd.PersistentFlags().StringVarP(
+		&sdkConf.BootstrapURL,
+		"mainflux-url",
+		"b",
+		sdkConf.BootstrapURL,
+		"Mainflux Bootstrap URL",
+	)
+
+	rootCmd.PersistentFlags().StringVarP(
+		&sdkConf.CertsURL,
+		"mainflux-url",
+		"c",
+		sdkConf.CertsURL,
+		"Mainflux Certs URL",
+	)
+
+	rootCmd.PersistentFlags().StringVarP(
+		&sdkConf.ThingsURL,
+		"mainflux-url",
+		"t",
+		sdkConf.ThingsURL,
+		"Mainflux Things URL",
+	)
+
+	rootCmd.PersistentFlags().StringVarP(
+		&sdkConf.UsersURL,
+		"mainflux-url",
+		"u",
+		sdkConf.UsersURL,
+		"Mainflux Users URL",
 	)
 
 	rootCmd.PersistentFlags().StringVarP(
 		&msgContentType,
 		"content-type",
-		"c",
+		"n",
 		msgContentType,
 		"Mainflux message content type",
 	)
@@ -122,7 +120,7 @@ func main() {
 	rootCmd.PersistentFlags().StringVar(
 		&cli.ConfigPath,
 		"config",
-		"",
+		"c",
 		"Mainflux config path",
 	)
 
