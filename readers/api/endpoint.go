@@ -5,6 +5,7 @@ package api
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/go-kit/kit/endpoint"
 	"github.com/mainflux/mainflux/readers"
@@ -17,8 +18,8 @@ func listMessagesEndpoint(svc readers.MessageRepository) endpoint.Endpoint {
 		if err := req.validate(); err != nil {
 			return nil, err
 		}
-
-		page, err := svc.ReadAll(req.chanID, req.pageMeta)
+		fmt.Println("LIST:", req.pageMeta)
+		page, err := svc.ReadAll(req.pageMeta)
 		if err != nil {
 			return nil, err
 		}

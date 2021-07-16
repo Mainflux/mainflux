@@ -102,6 +102,9 @@ github.com/gopcua/opcua/ua
 github.com/gopcua/opcua/uacp
 github.com/gopcua/opcua/uapolicy
 github.com/gopcua/opcua/uasc
+# github.com/gorilla/schema v1.2.0
+## explicit
+github.com/gorilla/schema
 # github.com/gorilla/websocket v1.4.2
 github.com/gorilla/websocket
 # github.com/hailocab/go-hostpool v0.0.0-20160125115350-e80d13ce29ed

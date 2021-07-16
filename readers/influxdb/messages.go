@@ -39,15 +39,15 @@ func New(client influxdata.Client, database string) readers.MessageRepository {
 	}
 }
 
-func (repo *influxRepository) ReadAll(chanID string, rpm readers.PageMetadata) (readers.MessagesPage, error) {
+func (repo *influxRepository) ReadAll(pm readers.PageMetadata) (readers.MessagesPage, error) {
 	format := defMeasurement
-	if rpm.Format != "" {
-		format = rpm.Format
+	if pm.Format != "" {
+		format = pm.Format
 	}
 
-	condition := fmtCondition(chanID, rpm)
+	condition := fmtCondition(pm)
 
-	cmd := fmt.Sprintf(`SELECT * FROM %s WHERE %s ORDER BY time DESC LIMIT %d OFFSET %d`, format, condition, rpm.Limit, rpm.Offset)
+	cmd := fmt.Sprintf(`SELECT * FROM %s WHERE %s ORDER BY time DESC LIMIT %d OFFSET %d`, format, condition, pm.Limit, pm.Offset)
 	q := influxdata.Query{
 		Command:  cmd,
 		Database: repo.database,
@@ -83,7 +83,7 @@ func (repo *influxRepository) ReadAll(chanID string, rpm readers.PageMetadata) (
 	}
 
 	page := readers.MessagesPage{
-		PageMetadata: rpm,
+		PageMetadata: pm,
 		Total:        total,
 		Messages:     ret,
 	}
@@ -132,11 +132,11 @@ func (repo *influxRepository) count(measurement, condition string) (uint64, erro
 	return strconv.ParseUint(count.String(), 10, 64)
 }
 
-func fmtCondition(chanID string, rpm readers.PageMetadata) string {
-	condition := fmt.Sprintf(`channel='%s'`, chanID)
+func fmtCondition(pm readers.PageMetadata) string {
+	condition := fmt.Sprintf(`channel='%s'`, pm.ChanID)
 
 	var query map[string]interface{}
-	meta, err := json.Marshal(rpm)
+	meta, err := json.Marshal(pm)
 	if err != nil {
 		return condition
 	}

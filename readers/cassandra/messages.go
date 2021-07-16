@@ -38,13 +38,13 @@ func New(session *gocql.Session) readers.MessageRepository {
 	}
 }
 
-func (cr cassandraRepository) ReadAll(chanID string, rpm readers.PageMetadata) (readers.MessagesPage, error) {
+func (cr cassandraRepository) ReadAll(pm readers.PageMetadata) (readers.MessagesPage, error) {
 	format := defTable
-	if rpm.Format != "" {
-		format = rpm.Format
+	if pm.Format != "" {
+		format = pm.Format
 	}
 
-	q, vals := buildQuery(chanID, rpm)
+	q, vals := buildQuery(pm)
 
 	selectCQL := fmt.Sprintf(`SELECT channel, subtopic, publisher, protocol, name, unit,
 		value, string_value, bool_value, data_value, sum, time,
@@ -63,14 +63,14 @@ func (cr cassandraRepository) ReadAll(chanID string, rpm readers.PageMetadata) (
 	scanner := iter.Scanner()
 
 	// skip first OFFSET rows
-	for i := uint64(0); i < rpm.Offset; i++ {
+	for i := uint64(0); i < pm.Offset; i++ {
 		if !scanner.Next() {
 			break
 		}
 	}
 
 	page := readers.MessagesPage{
-		PageMetadata: rpm,
+		PageMetadata: pm,
 		Messages:     []readers.Message{},
 	}
 
@@ -124,12 +124,12 @@ func (cr cassandraRepository) ReadAll(chanID string, rpm readers.PageMetadata) (
 	return page, nil
 }
 
-func buildQuery(chanID string, rpm readers.PageMetadata) (string, []interface{}) {
+func buildQuery(pm readers.PageMetadata) (string, []interface{}) {
 	var condCQL string
-	vals := []interface{}{chanID}
+	vals := []interface{}{pm.ChanID}
 
 	var query map[string]interface{}
-	meta, err := json.Marshal(rpm)
+	meta, err := json.Marshal(pm)
 	if err != nil {
 		return condCQL, vals
 	}
@@ -166,7 +166,7 @@ func buildQuery(chanID string, rpm readers.PageMetadata) (string, []interface{})
 			condCQL = fmt.Sprintf(`%s AND time < ?`, condCQL)
 		}
 	}
-	vals = append(vals, rpm.Offset+rpm.Limit)
+	vals = append(vals, pm.Offset+pm.Limit)
 
 	return condCQL, vals
 }

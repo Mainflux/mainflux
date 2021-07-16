@@ -16,6 +16,7 @@ require (
 	github.com/gogo/protobuf v1.3.2
 	github.com/golang/protobuf v1.4.3
 	github.com/gopcua/opcua v0.1.6
+	github.com/gorilla/schema v1.2.0
 	github.com/hashicorp/vault/api v1.1.0
 	github.com/hokaccha/go-prettyjson v0.0.0-20210113012101-fb4e108d2519
 	github.com/influxdata/influxdb v1.8.5

@@ -6,6 +6,7 @@ package postgres
 import (
 	"encoding/json"
 	"fmt"
+	"strings"
 
 	"github.com/jmoiron/sqlx" // required for DB access
 	"github.com/lib/pq"
@@ -41,34 +42,46 @@ func New(db *sqlx.DB) readers.MessageRepository {
 	}
 }
 
-func (tr postgresRepository) ReadAll(chanID string, rpm readers.PageMetadata) (readers.MessagesPage, error) {
+func (tr postgresRepository) ReadAll(pm readers.PageMetadata) (readers.MessagesPage, error) {
 	order := "time"
-	format := defTable
+	table := defTable
 
-	if rpm.Format != "" && rpm.Format != defTable {
-		order = "created"
-		format = rpm.Format
+	ft, ok := pm.Query[format].(string)
+	if !ok {
+		return readers.MessagesPage{}, errReadMessages
 	}
+	if ft != "" && ft != defTable {
+		order = "created"
+		table = ft
+	}
+
+	params := pm.Query
+	delete(params, format)
+	fmt.Println("PARAMS:", params)
+	condition := fmtCondition(params)
 
 	q := fmt.Sprintf(`SELECT * FROM %s
     WHERE %s ORDER BY %s DESC
-	LIMIT :limit OFFSET :offset;`, format, fmtCondition(chanID, rpm), order)
+	LIMIT :limit OFFSET :offset;`, table, condition, order)
+	params["limit"] = int(pm.Limit)
+	params["offset"] = int(pm.Offset)
 
-	params := map[string]interface{}{
-		"channel":      chanID,
-		"limit":        rpm.Limit,
-		"offset":       rpm.Offset,
-		"subtopic":     rpm.Subtopic,
-		"publisher":    rpm.Publisher,
-		"name":         rpm.Name,
-		"protocol":     rpm.Protocol,
-		"value":        rpm.Value,
-		"bool_value":   rpm.BoolValue,
-		"string_value": rpm.StringValue,
-		"data_value":   rpm.DataValue,
-		"from":         rpm.From,
-		"to":           rpm.To,
-	}
+	// params := map[string]interface{}{
+	// 	"channel":      chanID,
+	// 	"limit":        rpm.Limit,
+	// 	"offset":       rpm.Offset,
+	// 	"subtopic":     rpm.Subtopic,
+	// 	"publisher":    rpm.Publisher,
+	// 	"name":         rpm.Name,
+	// 	"protocol":     rpm.Protocol,
+	// 	"value":        rpm.Value,
+	// 	"bool_value":   rpm.BoolValue,
+	// 	"string_value": rpm.StringValue,
+	// 	"data_value":   rpm.DataValue,
+	// 	"from":         rpm.From,
+	// 	"to":           rpm.To,
+	// }
+	fmt.Println("QUERY:", q, "\nPARMAS:", params, "\nCONDITION:", condition)
 
 	rows, err := tr.db.NamedQuery(q, params)
 	if err != nil {
@@ -82,7 +95,7 @@ func (tr postgresRepository) ReadAll(chanID string, rpm readers.PageMetadata) (r
 	defer rows.Close()
 
 	page := readers.MessagesPage{
-		PageMetadata: rpm,
+		PageMetadata: pm,
 		Messages:     []readers.Message{},
 	}
 	switch format {
@@ -111,7 +124,7 @@ func (tr postgresRepository) ReadAll(chanID string, rpm readers.PageMetadata) (r
 
 	}
 
-	q = fmt.Sprintf(`SELECT COUNT(*) FROM %s WHERE %s;`, format, fmtCondition(chanID, rpm))
+	q = fmt.Sprintf(`SELECT COUNT(*) FROM %s WHERE %s;`, format, condition)
 	rows, err = tr.db.NamedQuery(q, params)
 	if err != nil {
 		return readers.MessagesPage{}, errors.Wrap(errReadMessages, err)
@@ -129,40 +142,40 @@ func (tr postgresRepository) ReadAll(chanID string, rpm readers.PageMetadata) (r
 	return page, nil
 }
 
-func fmtCondition(chanID string, rpm readers.PageMetadata) string {
+func fmtCondition(query map[string]interface{}) string {
 	condition := `channel = :channel`
-
-	var query map[string]interface{}
-	meta, err := json.Marshal(rpm)
-	if err != nil {
-		return condition
-	}
-	json.Unmarshal(meta, &query)
-
+	// var condition string
+	// delete(query, "channel")
+	conds := []string{}
 	for name := range query {
 		switch name {
-		case
-			"subtopic",
-			"publisher",
-			"name",
-			"protocol":
-			condition = fmt.Sprintf(`%s AND %s = :%s`, condition, name, name)
-		case "v":
+		case "value":
 			comparator := readers.ParseValueComparator(query)
 			condition = fmt.Sprintf(`%s AND value %s :value`, condition, comparator)
-		case "vb":
-			condition = fmt.Sprintf(`%s AND bool_value = :bool_value`, condition)
-		case "vs":
-			condition = fmt.Sprintf(`%s AND string_value = :string_value`, condition)
-		case "vd":
-			condition = fmt.Sprintf(`%s AND data_value = :data_value`, condition)
+			conds = append(conds, fmt.Sprintf("value %s :value", comparator))
+		// case "bool_value":
+		// 	condition = fmt.Sprintf(`%s AND bool_value = :bool_value`, condition)
+		// case "unot":
+		// 	condition = fmt.Sprintf(`%s AND bool_value = :bool_value`, condition)
+		// case "string_value":
+		// 	condition = fmt.Sprintf(`%s AND string_value = :string_value`, condition)
+		// case "data_value":
+		// 	condition = fmt.Sprintf(`%s AND data_value = :data_value`, condition)
 		case "from":
 			condition = fmt.Sprintf(`%s AND time >= :from`, condition)
+			conds = append(conds, "time >= :from")
 		case "to":
 			condition = fmt.Sprintf(`%s AND time < :to`, condition)
+			conds = append(conds, "time < :to")
+		default:
+			condition = fmt.Sprintf(`%s AND %s = :%s`, condition, name, name)
+			conds = append(conds, fmt.Sprintf("%s = :%s", name, name))
 		}
 	}
-	return condition
+	// fmt.Println(strings.Join(conds, " AND "))
+	// fmt.Println("CNDTN:", condition)
+	// fmt.Println("QUERY:", query)
+	return strings.Join(conds, " AND ")
 }
 
 type senmlMessage struct {
